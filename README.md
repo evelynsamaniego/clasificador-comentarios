@@ -19,3 +19,6 @@ Fue creado como parte del proyecto final de la materia *Temas de Programación A
 - Gunicorn (para despliegue en Render)
 
 Este proyecto fue desarrollado por Evelyn Samaniego como parte de su formación académica en programación avanzada.
+
+Enlace en Render:
+https://clasificador-comentarios.onrender.com
