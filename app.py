@@ -1,5 +1,6 @@
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 import pickle
-from flask import Flask, render_template, request
 
 # Cargar modelo y vectorizador
 modelo = pickle.load(open("modelo_sentimientos.pkl", "rb"))
@@ -7,25 +8,25 @@ vectorizador = pickle.load(open("vectorizador.pkl", "rb"))
 
 # App Flask
 app = Flask(__name__)
+CORS(app)  # <--- Aquí habilitas CORS para toda la app
 
-@app.route("/", methods=["GET", "POST"])
-def index():
-    resultado = None
-    clase = None
+@app.route("/")
+def home():
+    return "API Clasificador de Comentarios Activa"
 
-    if request.method == "POST":
-        comentario = request.form["comentario"]
-        comentario_vector = vectorizador.transform([comentario])
-        prediccion = modelo.predict(comentario_vector)[0]
+@app.route("/api/clasificar", methods=["POST"])
+def clasificar():
+    data = request.get_json()
+    comentario = data.get("comentario", "")
+    
+    if not comentario:
+        return jsonify({"error": "Comentario vacío"}), 400
 
-        if prediccion == 1:
-            resultado = "Comentario positivo 😊"
-            clase = "positivo"
-        else:
-            resultado = "Comentario negativo 😞"
-            clase = "negativo"
+    comentario_vector = vectorizador.transform([comentario])
+    prediccion = modelo.predict(comentario_vector)[0]
+    resultado = "positivo" if prediccion == 1 else "negativo"
 
-    return render_template("index.html", resultado=resultado, clase=clase)
+    return jsonify({"resultado": resultado})
 
 if __name__ == "__main__":
     app.run(debug=True)
