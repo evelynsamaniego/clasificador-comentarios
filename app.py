@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import pickle
 
@@ -12,7 +12,7 @@ CORS(app)  # <--- Aquí habilitas CORS para toda la app
 
 @app.route("/")
 def home():
-    return "API Clasificador de Comentarios Activa"
+    return render_template("index.html")  # 👈 mostrar la página
 
 @app.route("/api/clasificar", methods=["POST"])
 def clasificar():
